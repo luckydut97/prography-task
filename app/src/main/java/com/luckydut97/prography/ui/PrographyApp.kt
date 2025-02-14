@@ -40,7 +40,7 @@ fun PrographyApp() {
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(Screen.Main.route) { MainScreen(navController) }
-            composable(Screen.Random.route) { RandomScreen(navController) }  // Random 화면 추가
+            composable(Screen.Random.route) { RandomScreen(navController) }
         }
     }
 }

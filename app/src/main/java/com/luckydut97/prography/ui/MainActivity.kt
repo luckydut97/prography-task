@@ -1,4 +1,3 @@
-//앱의 진입점, Compose를 시작
 package com.luckydut97.prography.ui
 
 import android.os.Bundle

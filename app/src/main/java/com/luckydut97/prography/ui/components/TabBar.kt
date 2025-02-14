@@ -1,4 +1,3 @@
-// ui/components/TabBar.kt
 package com.luckydut97.prography.ui.components
 
 import androidx.compose.foundation.Image
@@ -30,7 +29,7 @@ fun TabBar(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(),  // 이 부분 추가
+                .fillMaxHeight(),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {

@@ -16,7 +16,7 @@ fun CommonHeader() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 16.dp),  // 기존 XML에서 marginTop과 동일
+            .padding(top = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
@@ -27,7 +27,7 @@ fun CommonHeader() {
                 .height(24.dp)
         )
 
-        Spacer(modifier = Modifier.height(16.dp))  // 로고 아래 여백 추가
+        Spacer(modifier = Modifier.height(16.dp))
 
         Divider(
             color = Color(0xFFEAEBEF),

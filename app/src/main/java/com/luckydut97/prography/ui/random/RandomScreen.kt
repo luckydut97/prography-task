@@ -13,6 +13,6 @@ fun RandomScreen(navController: NavController) {
     ) {
         CommonHeader()
 
-        // 여기에 나중에 랜덤 카드 UI 구현 예정
+        // 나중에 랜덤 카드 UI 구현 예정
     }
 }

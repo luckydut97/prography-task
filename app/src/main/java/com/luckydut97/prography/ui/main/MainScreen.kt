@@ -20,7 +20,6 @@ fun MainScreen(navController: NavController) {
     ) {
         CommonHeader()
 
-        // 북마크 섹션
         Column(
             modifier = Modifier.padding(horizontal = 16.dp)
         ) {
@@ -44,7 +43,6 @@ fun MainScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // 최신 이미지 그리드
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             contentPadding = PaddingValues(horizontal = 16.dp),

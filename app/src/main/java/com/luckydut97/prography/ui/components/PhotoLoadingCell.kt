@@ -1,4 +1,3 @@
-// ui/components/cells/PhotoLoadingCell.kt
 package com.luckydut97.prography.ui.components.cells
 
 import androidx.compose.foundation.background
@@ -19,11 +18,10 @@ fun PhotoLoadingCell(
             .fillMaxWidth()
             .aspectRatio(1f)
             .clip(RoundedCornerShape(8.dp))
-            .background(Color(0xFFF6F6F0))  // 피그마에서 보이는 회색
+            .background(Color(0xFFF6F6F0))
     )
 }
 
-// ui/components/cells/PhotoListLoadingCell.kt
 @Composable
 fun PhotoListLoadingCell(
     modifier: Modifier = Modifier
@@ -43,7 +41,6 @@ fun PhotoListLoadingCell(
                 .background(Color(0xFFF6F6F0))
         )
 
-        // Grid of loading cells
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
