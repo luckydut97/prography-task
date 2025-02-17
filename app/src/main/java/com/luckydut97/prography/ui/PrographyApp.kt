@@ -27,7 +27,12 @@ fun PrographyApp() {
                 onTabSelected = { route ->
                     if (currentRoute != route) {
                         navController.navigate(route) {
-                            popUpTo(route) { inclusive = true }
+                            // popUpTo > navController.graph.startDestinationId 변경
+                            popUpTo(navController.graph.startDestinationId) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
                         }
                     }
                 }
