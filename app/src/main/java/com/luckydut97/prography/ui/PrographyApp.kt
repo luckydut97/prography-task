@@ -5,6 +5,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -27,7 +28,6 @@ fun PrographyApp() {
                 onTabSelected = { route ->
                     if (currentRoute != route) {
                         navController.navigate(route) {
-                            // popUpTo > navController.graph.startDestinationId 변경
                             popUpTo(navController.graph.startDestinationId) {
                                 saveState = true
                             }
@@ -44,8 +44,12 @@ fun PrographyApp() {
             startDestination = Screen.Main.route,
             modifier = Modifier.padding(paddingValues)
         ) {
-            composable(Screen.Main.route) { MainScreen(navController) }
-            composable(Screen.Random.route) { RandomScreen(navController) }
+            composable(Screen.Main.route) {
+                MainScreen(navController)
+            }
+            composable(Screen.Random.route) {
+                RandomScreen(navController)
+            }
         }
     }
 }

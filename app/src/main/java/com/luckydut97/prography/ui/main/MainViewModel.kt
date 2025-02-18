@@ -24,14 +24,18 @@ class MainViewModel : ViewModel() {
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
 
+    private val _selectedPhoto = MutableStateFlow<UnsplashPhotoDto?>(null)
+    val selectedPhoto: StateFlow<UnsplashPhotoDto?> = _selectedPhoto
+
     init {
         loadPhotos()
     }
 
-    private fun loadPhotos() {
+    fun loadPhotos() {
         viewModelScope.launch {
             try {
                 _isLoading.value = true
+                _error.value = null
                 val result = repository.getPhotos()
                 _photos.value = result
             } catch (e: Exception) {
@@ -42,7 +46,31 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun refresh() {
+    fun toggleBookmark(photo: UnsplashPhotoDto) {
+        viewModelScope.launch {
+            val currentBookmarks = _bookmarks.value.toMutableList()
+            if (currentBookmarks.any { it.id == photo.id }) {
+                currentBookmarks.removeAll { it.id == photo.id }
+            } else {
+                currentBookmarks.add(photo)
+            }
+            _bookmarks.value = currentBookmarks
+        }
+    }
+
+    fun selectPhoto(photo: UnsplashPhotoDto) {
+        _selectedPhoto.value = photo
+    }
+
+    fun getPhotoById(photoId: String): UnsplashPhotoDto? {
+        return photos.value.find { it.id == photoId }
+    }
+
+    fun retryLoadPhotos() {
         loadPhotos()
+    }
+
+    fun clearError() {
+        _error.value = null
     }
 }

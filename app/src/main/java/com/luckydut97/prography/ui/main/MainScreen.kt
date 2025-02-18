@@ -1,6 +1,7 @@
 package com.luckydut97.prography.ui.main
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -11,6 +12,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -23,6 +26,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.luckydut97.prography.ui.components.CommonHeader
 import com.luckydut97.prography.ui.components.cells.PhotoListLoadingCell
+import com.luckydut97.prography.ui.detail.DetailDialog
+
 
 @Composable
 fun MainScreen(
@@ -32,6 +37,15 @@ fun MainScreen(
     val isLoading by viewModel.isLoading.collectAsState()
     val photos by viewModel.photos.collectAsState()
     val bookmarks by viewModel.bookmarks.collectAsState()
+    val selectedPhotoId = remember { mutableStateOf<String?>(null) }
+
+    selectedPhotoId.value?.let { photoId ->
+        DetailDialog(
+            photoId = photoId,
+            onDismiss = { selectedPhotoId.value = null },
+            viewModel = viewModel
+        )
+    }
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -57,6 +71,7 @@ fun MainScreen(
                             Box(
                                 modifier = Modifier
                                     .size(120.dp)
+                                    .clip(RoundedCornerShape(8.dp))
                                     .background(Color(0xFFF0F0F0))
                             )
                         }
@@ -80,8 +95,13 @@ fun MainScreen(
                             .build(),
                         contentDescription = null,
                         modifier = Modifier
+                            .fillMaxWidth()
                             .aspectRatio(1f)
-                            .clip(RoundedCornerShape(8.dp)),
+                            .clip(RoundedCornerShape(8.dp))
+                            .clickable {
+                                viewModel.selectPhoto(photos[index])
+                                selectedPhotoId.value = photos[index].id
+                            },
                         contentScale = ContentScale.Crop
                     )
                 }
