@@ -128,11 +128,11 @@ fun DetailDialog(
                     }
 
                     // Bottom Content
+                    // Bottom Content
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color.Black.copy(alpha = 0.8f))
-                            .padding(16.dp)
+                            .padding(16.dp)  // background 제거하고 padding만 유지
                     ) {
                         Text(
                             text = "Title",
@@ -143,8 +143,6 @@ fun DetailDialog(
                             text = "description\ndescription은 최대 2줄\n#tag #tag # tag #tag",
                             color = Color.White.copy(alpha = 0.8f),
                             style = MaterialTheme.typography.bodyMedium,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.padding(top = 8.dp)
                         )
                     }
