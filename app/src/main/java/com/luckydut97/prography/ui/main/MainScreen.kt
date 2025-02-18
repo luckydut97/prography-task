@@ -3,6 +3,7 @@ package com.luckydut97.prography.ui.main
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -26,6 +27,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.luckydut97.prography.ui.components.CommonHeader
 import com.luckydut97.prography.ui.components.cells.PhotoListLoadingCell
+import com.luckydut97.prography.ui.components.layout.StaggeredGrid
 import com.luckydut97.prography.ui.detail.DetailDialog
 
 
@@ -52,58 +54,46 @@ fun MainScreen(
     ) {
         CommonHeader()
 
-        if (isLoading) {
-            PhotoListLoadingCell()
-        } else {
-            if (bookmarks.isNotEmpty()) {
-                Column(
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                ) {
-                    Text(
-                        text = "북마크",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(vertical = 16.dp)
-                    )
-                    LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        items(bookmarks.size.coerceAtMost(3)) { index ->
-                            Box(
-                                modifier = Modifier
-                                    .size(120.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(Color(0xFFF0F0F0))
-                            )
+        LazyColumn {  // LazyColumn 추가
+            item {
+                if (isLoading) {
+                    PhotoListLoadingCell()
+                } else {
+                    Column {  // Column으로 감싸서 순서대로 배치
+                        if (bookmarks.isNotEmpty()) {
+                            Column(
+                                modifier = Modifier.padding(horizontal = 16.dp)
+                            ) {
+                                Text(
+                                    text = "북마크",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    modifier = Modifier.padding(vertical = 16.dp)
+                                )
+                                LazyRow(
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    items(bookmarks.size.coerceAtMost(3)) { index ->
+                                        Box(
+                                            modifier = Modifier
+                                                .size(120.dp)
+                                                .clip(RoundedCornerShape(8.dp))
+                                                .background(Color(0xFFF0F0F0))
+                                        )
+                                    }
+                                }
+                            }
                         }
+
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        StaggeredGrid(
+                            photos = photos,
+                            onPhotoClick = { photo ->
+                                viewModel.selectPhoto(photo)
+                                selectedPhotoId.value = photo.id
+                            }
+                        )
                     }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                contentPadding = PaddingValues(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(photos.size) { index ->
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(photos[index].urls.raw)
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(1f)
-                            .clip(RoundedCornerShape(8.dp))
-                            .clickable {
-                                viewModel.selectPhoto(photos[index])
-                                selectedPhotoId.value = photos[index].id
-                            },
-                        contentScale = ContentScale.Crop
-                    )
                 }
             }
         }
