@@ -30,7 +30,7 @@ fun CommonHeader() {
         Spacer(modifier = Modifier.height(16.dp))
 
         Divider(
-            color = Color(0xFFEAEBEF),
+            color = Color(0xFFE9E9E9),
             thickness = 1.dp,
             modifier = Modifier.fillMaxWidth()
         )

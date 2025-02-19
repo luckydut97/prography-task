@@ -1,5 +1,6 @@
 package com.luckydut97.prography.ui.main
 
+import android.app.Application
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -22,9 +23,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.luckydut97.prography.ui.components.CommonHeader
 import com.luckydut97.prography.ui.components.cells.PhotoListLoadingCell
 import com.luckydut97.prography.ui.components.layout.StaggeredGrid
@@ -35,7 +40,9 @@ import kotlinx.coroutines.flow.filter
 @Composable
 fun MainScreen(
     navController: NavController,
-    viewModel: MainViewModel = viewModel()
+    viewModel: MainViewModel = viewModel(
+        factory = MainViewModel.Factory(LocalContext.current.applicationContext as Application)
+    )
 ) {
     val isLoading by viewModel.isLoading.collectAsState()
     val isLoadingMore by viewModel.isLoadingMore.collectAsState()
@@ -136,12 +143,22 @@ fun MainScreen(
                             LazyRow(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                items(bookmarks.size.coerceAtMost(3)) { index ->
-                                    Box(
+                                items(bookmarks.size) { index ->
+                                    val bookmark = bookmarks[index]
+                                    AsyncImage(
+                                        model = ImageRequest.Builder(LocalContext.current)
+                                            .data(bookmark.urls.raw)
+                                            .crossfade(true)
+                                            .build(),
+                                        contentDescription = null,
                                         modifier = Modifier
                                             .size(120.dp)
                                             .clip(RoundedCornerShape(8.dp))
-                                            .background(Color(0xFFF0F0F0))
+                                            .clickable {
+                                                viewModel.selectPhoto(bookmark)
+                                                selectedPhotoId.value = bookmark.id
+                                            },
+                                        contentScale = ContentScale.Crop
                                     )
                                 }
                             }
