@@ -142,7 +142,7 @@ fun DetailDialog(
                         )
                     }
 
-                    // Bottom Content
+                    // Bottom Content 부분
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -157,7 +157,7 @@ fun DetailDialog(
                             text = "description\ndescription은 최대 2줄\n#tag #tag # tag #tag",
                             color = Color.White.copy(alpha = 0.8f),
                             style = MaterialTheme.typography.bodyMedium,
-                            maxLines = 2,
+                            maxLines = 3, // 3줄로 변경
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.padding(top = 8.dp)
                         )

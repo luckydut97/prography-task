@@ -1,18 +1,21 @@
 package com.luckydut97.prography.ui.components.layout
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.luckydut97.prography.data.api.model.UnsplashPhotoDto
@@ -26,18 +29,47 @@ fun StaggeredGrid(
     Layout(
         content = {
             photos.forEach { photo ->
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(photo.urls.raw)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = null,
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(8.dp))
-                        .clickable { onPhotoClick(photo) },
-                    contentScale = ContentScale.FillWidth
-                )
+                        .clickable { onPhotoClick(photo) }
+                ) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(photo.urls.raw)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxWidth(),
+                        contentScale = ContentScale.FillWidth
+                    )
+
+                    // 텍스트 오버레이
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .fillMaxWidth()
+                            .padding(4.dp),
+                        verticalArrangement = Arrangement.spacedBy(-10.dp) // 줄 간격
+                    ) {
+                        Text(
+                            text = "titletitletitle",
+                            color = Color.White,
+                            fontSize = 12.sp, // 글자 크기 줄임
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+
+                        Text(
+                            text = "타이틀은최대2줄까지",
+                            color = Color.White, // 흰색으로 통일
+                            fontSize = 10.sp, // 더 작은 글자 크기
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
             }
         },
         modifier = modifier.padding(horizontal = 8.dp)
@@ -51,7 +83,8 @@ fun StaggeredGrid(
             val ratio = photo.height.toFloat() / photo.width.toFloat()
 
             val imageWidth = columnWidths[0] - 16.dp.toPx()
-            val imageHeight = imageWidth * ratio
+            // 텍스트 영역을 고려하여 약간의 높이 추가
+            val imageHeight = (imageWidth * ratio) + 48.dp.toPx()
 
             val columnIndex = columnHeights.indexOf(columnHeights.minOrNull()!!)
 
