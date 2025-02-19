@@ -6,7 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class PhotoRepository(private val api: UnsplashApi) {
-    suspend fun getPhotos(): List<UnsplashPhotoDto> = withContext(Dispatchers.IO) {
-        api.getPhotos()
+    suspend fun getPhotos(page: Int, perPage: Int = 10): List<UnsplashPhotoDto> = withContext(Dispatchers.IO) {
+        api.getPhotos(page = page, perPage = perPage)
     }
 }
