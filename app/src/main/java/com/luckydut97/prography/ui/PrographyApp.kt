@@ -5,6 +5,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -22,6 +23,7 @@ fun PrographyApp() {
     val currentRoute = navBackStackEntry?.destination?.route ?: Screen.Main.route
 
     Scaffold(
+        containerColor = Color(0xFFF9F9F9), // 앱 전체 배경,,RGB(249, 249, 249)
         bottomBar = {
             TabBar(
                 selectedTab = currentRoute,
