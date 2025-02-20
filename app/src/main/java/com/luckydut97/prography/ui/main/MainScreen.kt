@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.luckydut97.prography.ui.components.CommonHeader
 import com.luckydut97.prography.ui.components.cells.PhotoListLoadingCell
@@ -145,7 +146,7 @@ fun MainScreen(
                             ) {
                                 items(bookmarks.size) { index ->
                                     val bookmark = bookmarks[index]
-                                    AsyncImage(
+                                    SubcomposeAsyncImage(
                                         model = ImageRequest.Builder(LocalContext.current)
                                             .data(bookmark.urls.raw)
                                             .crossfade(true)
@@ -158,7 +159,18 @@ fun MainScreen(
                                                 viewModel.selectPhoto(bookmark)
                                                 selectedPhotoId.value = bookmark.id
                                             },
-                                        contentScale = ContentScale.Crop
+                                        contentScale = ContentScale.Crop,
+                                        loading = {
+                                            Box(
+                                                modifier = Modifier.fillMaxSize(),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                CircularProgressIndicator(
+                                                    modifier = Modifier.size(24.dp),
+                                                    strokeWidth = 2.dp
+                                                )
+                                            }
+                                        }
                                     )
                                 }
                             }
