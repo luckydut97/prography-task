@@ -12,6 +12,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -57,26 +58,25 @@ fun StaggeredGrid(
                         }
                     )
 
-                    // 텍스트 오버레이
                     Column(
                         modifier = Modifier
                             .align(Alignment.BottomStart)
                             .fillMaxWidth()
                             .padding(4.dp),
-                        verticalArrangement = Arrangement.spacedBy(-10.dp) // 줄 간격
+                        verticalArrangement = Arrangement.spacedBy(2.dp)  // 줄 간격 축소
                     ) {
                         Text(
                             text = "titletitletitle",
                             color = Color.White,
-                            fontSize = 12.sp, // 글자 크기 줄임
+                            fontSize = 12.sp,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
 
                         Text(
                             text = "타이틀은최대2줄까지",
-                            color = Color.White, // 흰색으로 통일
-                            fontSize = 10.sp, // 더 작은 글자 크기
+                            color = Color.White,
+                            fontSize = 10.sp,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -87,38 +87,55 @@ fun StaggeredGrid(
         modifier = modifier.padding(horizontal = 8.dp)
     ) { measurables, constraints ->
         val columns = 2
-        val columnWidths = IntArray(columns) { constraints.maxWidth / columns }
+        val spacing = 4.dp.toPx().toInt()
+        val columnWidth = (constraints.maxWidth / columns) - spacing
+
+        // 각 열의 현재 높이를 추적
         val columnHeights = IntArray(columns) { 0 }
 
-        val placeables = measurables.mapIndexed { index, measurable ->
+        // 각 열의 아이템들을 저장할 리스트
+        val columnItems = Array(columns) { mutableListOf<Pair<Placeable, Int>>() }
+
+        // 각 아이템을 측정하고 적절한 열에 배치
+        measurables.forEachIndexed { index, measurable ->
             val photo = photos[index]
             val ratio = photo.height.toFloat() / photo.width.toFloat()
 
-            val imageWidth = columnWidths[0] - 16.dp.toPx()
-            // 텍스트 영역을 고려하여 약간의 높이 추가
-            val imageHeight = (imageWidth * ratio) + 48.dp.toPx()
+            // 이미지 크기 계산
+            val itemWidth = columnWidth
+            val itemHeight = (itemWidth * ratio).toInt()
 
-            val columnIndex = columnHeights.indexOf(columnHeights.minOrNull()!!)
+            // 아이템 측정
+            val placeable = measurable.measure(
+                constraints.copy(
+                    maxWidth = itemWidth,
+                    maxHeight = itemHeight
+                )
+            )
 
-            columnHeights[columnIndex] += imageHeight.toInt() + 8.dp.toPx().toInt()
+            // 가장 짧은 열 찾기
+            val shortestColumn = columnHeights.withIndex()
+                .minByOrNull { it.value }?.index ?: 0
 
-            measurable.measure(constraints.copy(
-                maxWidth = imageWidth.toInt(),
-                maxHeight = imageHeight.toInt()
-            )) to columnIndex
+            // 해당 열에 아이템 추가
+            columnItems[shortestColumn].add(placeable to itemHeight)
+            columnHeights[shortestColumn] += itemHeight + spacing
         }
 
-        val height = columnHeights.maxOrNull()!!.toInt()
+        // 전체 높이는 가장 긴 열의 높이
+        val maxHeight = columnHeights.maxOrNull() ?: 0
 
-        layout(constraints.maxWidth, height) {
-            val columnY = IntArray(columns) { 0 }
-
-            placeables.forEach { (placeable, column) ->
-                placeable.place(
-                    x = column * columnWidths[0],
-                    y = columnY[column]
-                )
-                columnY[column] += placeable.height + 8.dp.toPx().toInt()
+        layout(constraints.maxWidth, maxHeight) {
+            // 각 열의 아이템들을 배치
+            columnItems.forEachIndexed { columnIndex, items ->
+                var yPosition = 0
+                items.forEach { (placeable, _) ->
+                    placeable.place(
+                        x = columnIndex * (columnWidth + spacing),
+                        y = yPosition
+                    )
+                    yPosition += placeable.height + spacing
+                }
             }
         }
     }

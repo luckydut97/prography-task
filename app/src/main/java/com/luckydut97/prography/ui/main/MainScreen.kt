@@ -65,36 +65,28 @@ fun MainScreen(
         println("보이는 아이템: ${listState.layoutInfo.visibleItemsInfo.map { it.index }}")
     }
 
-    // 스크롤이 마지막 아이템에 도달했는지 감지 (수정된 로직)
+    // 스크롤이 마지막 아이템에 도달했는지 감지하는 로직 수정
     val isAtBottom by remember {
         derivedStateOf {
-            // 디버깅 정보 출력
-            val visibleItems = listState.layoutInfo.visibleItemsInfo
-            val totalItems = listState.layoutInfo.totalItemsCount
+            val layoutInfo = listState.layoutInfo
+            val visibleItemsInfo = layoutInfo.visibleItemsInfo
 
-            if (totalItems == 0 || visibleItems.isEmpty()) {
+            if (visibleItemsInfo.isEmpty()) {
                 false
             } else {
-                val lastVisibleItem = visibleItems.last()
-                val isLastItemVisible = lastVisibleItem.index >= totalItems - 1
-                val isScrolledToEnd = lastVisibleItem.offset + lastVisibleItem.size <= listState.layoutInfo.viewportEndOffset + 200
+                // 현재 보이는 마지막 아이템의 끝부분이 화면에 완전히 보일 때 로드
+                val lastVisibleItem = visibleItemsInfo.last()
+                val viewportHeight = layoutInfo.viewportEndOffset + layoutInfo.viewportStartOffset
 
-                println("마지막 아이템: ${lastVisibleItem.index}, 전체 아이템: $totalItems")
-                println("마지막 보이는지: $isLastItemVisible, 스크롤 끝: $isScrolledToEnd")
-
-                isLastItemVisible && isScrolledToEnd
+                lastVisibleItem.offset + lastVisibleItem.size <= viewportHeight
             }
         }
     }
 
-    // 스크롤이 마지막에 도달하면 추가 로드 (수정됨)
+    // 스크롤이 마지막에 도달하면 추가 로드
     LaunchedEffect(isAtBottom) {
-        if (isAtBottom) {
-            println("바닥 도달 감지: 로딩=$isLoading, 더 로딩=$isLoadingMore, 사진=${photos.size}")
-            if (!isLoading && !isLoadingMore && photos.isNotEmpty()) {
-                println("추가 로딩 시작!")
-                viewModel.loadMorePhotos()
-            }
+        if (isAtBottom && !isLoading && !isLoadingMore && photos.isNotEmpty()) {
+            viewModel.loadMorePhotos()
         }
     }
 
@@ -200,16 +192,19 @@ fun MainScreen(
                 }
             }
 
-            // 로딩 인디케이터
+            // 로딩 인디케이터를 StaggeredGrid 바로 아래에 표시
             if (isLoadingMore) {
                 item {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
+                            .padding(vertical = 8.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        CircularProgressIndicator()
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(32.dp),
+                            strokeWidth = 2.dp
+                        )
                     }
                 }
             }
@@ -219,7 +214,7 @@ fun MainScreen(
                 Spacer(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(100.dp)
+                        .height(1.dp)
                 )
             }
         }

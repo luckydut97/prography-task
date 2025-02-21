@@ -138,7 +138,7 @@ fun RandomScreen(
                                     }
                                 )
                             },
-                        shape = RoundedCornerShape(24.dp),
+                        shape = RoundedCornerShape(8.dp),
                         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
                         colors = CardDefaults.cardColors(containerColor = Color.White)
                     ) {
@@ -153,7 +153,7 @@ fun RandomScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .weight(0.75f)
-                                    .clip(RoundedCornerShape(16.dp))
+                                    .clip(RoundedCornerShape(8.dp))
                                     .background(Color.Black)
                             ) {
                                 // 이미지
@@ -178,7 +178,6 @@ fun RandomScreen(
                                 )
                             }
 
-                            // 하단 버튼 영역 (카드 높이의 25%를 차지)
                             // 하단 버튼 영역 (카드 높이의 25%를 차지)
                             Box(
                                 modifier = Modifier
